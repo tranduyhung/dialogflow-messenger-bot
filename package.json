@@ -1,0 +1,11 @@
+{
+  "name": "dialogflow-messenger-bot",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "body-parser": "*",
+    "dotenv": "^6.1.0",
+    "express": "*",
+    "mongodb": "*"
+  }
+}
