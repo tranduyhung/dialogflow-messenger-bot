@@ -1,11 +1,12 @@
 require('dotenv').config();
-const express = require('express');
-const app = express();
 var port = process.env.PORT || 3000;
 
 const { WebhookClient } = require('dialogflow-fulfillment');
-
 const bodyParser = require('body-parser');
+const express = require('express');
+
+const app = express();
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 var MongoClient = require('mongodb').MongoClient;
