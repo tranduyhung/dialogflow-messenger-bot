@@ -21,7 +21,7 @@ MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
 app.get('/', (req, res) => res.send('Hello World!'));
 
 app.post('/', (req, res) => {
-  console.log(req);
+  console.log(req.body);
 
   res.setHeader('Content-Type', 'application/json');
   res.send(JSON.stringify({ success: true, message: 'Hello World!' }));
