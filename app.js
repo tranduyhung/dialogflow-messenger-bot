@@ -3,6 +3,8 @@ const express = require('express');
 const app = express();
 var port = process.env.PORT || 3000;
 
+const { WebhookClient } = require('dialogflow-fulfillment');
+
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -21,7 +23,10 @@ MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
 app.get('/', (req, res) => res.send('Hello World!'));
 
 app.post('/', (req, res) => {
-  console.log(req.body);
+  const agent = new WebhookClient({ req, res });
+
+  console.log('Dialogflow Request headers: ' + JSON.stringify(req.headers));
+  console.log('Dialogflow Request body: ' + JSON.stringify(req.body));
 
   res.setHeader('Content-Type', 'application/json');
   res.send(JSON.stringify({ success: true, message: 'Hello World!' }));
