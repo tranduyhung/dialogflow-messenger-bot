@@ -10,19 +10,41 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 var MongoClient = require('mongodb').MongoClient;
-var url = process.env.MONGODB_URI;
-
-MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
-  if (err)
-    throw err;
-
-  console.log(`Connected to ${url}`);
-  db.close();
-  console.log(`Disconnected from ${url}`);
-})
+var dbUrl = process.env.MONGODB_URI;
+var dbOptions = { useNewUrlParser: true };
+var dbName = 'heroku_j0v9j0rg';
+var productsCol = 'products';
+var sizesCol = 'sizes';
+var colorsCol = 'colors';
+var itemsCol = 'items';
 
 function welcomeIntent(agent) {
-  agent.add('Hello, this is a welcome message from Node.js!');
+  MongoClient.connect(dbUrl, dbOptions, function(err, db) {
+    if (err) throw err;
+
+    let dbo = db.db(dbName);
+
+    dbo.collection(productsCol).find({}).toArray(function(err, products) {
+      if (err) throw err;
+
+      db.close();
+
+      let quantity = products.length;
+
+      if (quantity == 0) return;
+
+      let names = [];
+
+      for (let i = 0; i < quantity; i++) {
+        names.push(products[i].name);
+      }
+
+      let response = 'Hello, welcome to our shop. We have ' + quantity + ' products: ';
+      response += names.join(', ') + '. Which product do you want to buy?';     
+
+      agent.add(response);
+    });
+  });
 }
 
 function fallbackIntent(agent) {
@@ -30,7 +52,7 @@ function fallbackIntent(agent) {
 }
 
 function productIntent(agent) {
-  
+
 }
 
 function sizeIntent(agent) {
@@ -60,34 +82,80 @@ app.post('/', (req, res) => {
   //res.send(JSON.stringify({ success: true, message: 'Hello World!' }));
 });
 
-app.post('/api/getProduct', function(req, res) {
+app.get('/api/getProducts', function(req, res) {
   res.setHeader('Content-Type', 'application/json');
 
-  if (typeof req.body.name === 'undefined') {
-    res.send(JSON.stringify({ success: false, message: 'Invalid product name' }));
-  }
+  MongoClient.connect(dbUrl, dbOptions, function(err, db) {
+    if (err) throw err;
 
-  res.end();
+    let dbo = db.db(dbName);
+
+    dbo.collection(productsCol).find({}).toArray(function(err, products) {
+      if (err) throw err;
+
+      db.close();
+
+      res.setHeader('Content-Type', 'application/json');
+      res.send(JSON.stringify({ success: true, data: products }));
+    });
+  });
 });
 
-app.post('/api/getColor', function(req, res) {
+app.get('/api/getColors', function(req, res) {
   res.setHeader('Content-Type', 'application/json');
 
-  if (typeof req.body.name === 'undefined') {
-    res.send(JSON.stringify({ success: false, message: 'Invalid color' }));
-  }
+  MongoClient.connect(dbUrl, dbOptions, function(err, db) {
+    if (err) throw err;
 
-  res.end();
+    let dbo = db.db(dbName);
+
+    dbo.collection(colorsCol).find({}).toArray(function(err, colors) {
+      if (err) throw err;
+
+      db.close();
+
+      res.setHeader('Content-Type', 'application/json');
+      res.send(JSON.stringify({ success: true, data: colors }));
+    });
+  });
 });
 
-app.post('/api/getSize', function(req, res) {
+app.get('/api/getSizes', function(req, res) {
   res.setHeader('Content-Type', 'application/json');
 
-  if (typeof req.body.name === 'undefined') {
-    res.send(JSON.stringify({ success: false, message: 'Invalid size' }));
-  }
+  MongoClient.connect(dbUrl, dbOptions, function(err, db) {
+    if (err) throw err;
 
-  res.end();
+    let dbo = db.db(dbName);
+
+    dbo.collection(sizesCol).find({}).toArray(function(err, sizes) {
+      if (err) throw err;
+
+      db.close();
+
+      res.setHeader('Content-Type', 'application/json');
+      res.send(JSON.stringify({ success: true, data: sizes }));
+    });
+  });
+});
+
+app.get('/api/getItems', function(req, res) {
+  res.setHeader('Content-Type', 'application/json');
+
+  MongoClient.connect(dbUrl, dbOptions, function(err, db) {
+    if (err) throw err;
+
+    let dbo = db.db(dbName);
+
+    dbo.collection(itemsCol).find({}).toArray(function(err, items) {
+      if (err) throw err;
+
+      db.close();
+
+      res.setHeader('Content-Type', 'application/json');
+      res.send(JSON.stringify({ success: true, data: items }));
+    });
+  });
 });
 
 app.listen(port, () => console.log(`Listening to port ${port}!`));
