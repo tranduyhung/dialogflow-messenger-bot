@@ -18,9 +18,13 @@ MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
   console.log(`Disconnected from ${url}`);
 })
 
-app.get('/', (req, res) => res.send('Hello World!'));
+app.get('/', (req, res) => {
+  console.log(req);
+  res.send(JSON.stringify({ success: true, message: 'Hello World!' }));
+  res.end();
+});
 
-app.post('/api/getProduct', function(req, res) {
+app.post('/api/getProducts', function(req, res) {
   res.setHeader('Content-Type', 'application/json');
 
   if (typeof req.body.name === 'undefined') {
