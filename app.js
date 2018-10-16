@@ -28,7 +28,8 @@ function welcomeIntent(agent) {
 
     let dbo = db.db(dbName);
 
-    dbo.collection(productsCol).find({}).toArray(function(err, products) {
+    dbo.collection(productsCol).find({}).toArray()
+    .then(function(err, products) {
       if (err) throw err;
 
       db.close();
@@ -94,18 +95,14 @@ app.post('/', (req, res) => {
 
 app.get('/api/getProducts', function(req, res) {
   res.setHeader('Content-Type', 'application/json');
-
   MongoClient.connect(dbUrl, dbOptions, function(err, db) {
     if (err) throw err;
-
     let dbo = db.db(dbName);
 
-    dbo.collection(productsCol).find({}).toArray(function(err, products) {
-      if (err) throw err;
-
+    return dbo.collection(productsCol).find({}).toArray()
+    .then(function(products) {
       db.close();
 
-      res.setHeader('Content-Type', 'application/json');
       res.send(JSON.stringify({ success: true, data: products }));
     });
   });
@@ -124,7 +121,6 @@ app.get('/api/getColors', function(req, res) {
 
       db.close();
 
-      res.setHeader('Content-Type', 'application/json');
       res.send(JSON.stringify({ success: true, data: colors }));
     });
   });
@@ -143,7 +139,6 @@ app.get('/api/getSizes', function(req, res) {
 
       db.close();
 
-      res.setHeader('Content-Type', 'application/json');
       res.send(JSON.stringify({ success: true, data: sizes }));
     });
   });
@@ -162,7 +157,6 @@ app.get('/api/getItems', function(req, res) {
 
       db.close();
 
-      res.setHeader('Content-Type', 'application/json');
       res.send(JSON.stringify({ success: true, data: items }));
     });
   });
