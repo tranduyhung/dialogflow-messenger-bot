@@ -29,9 +29,7 @@ function welcomeIntent(agent) {
     let dbo = db.db(dbName);
 
     dbo.collection(productsCol).find({}).toArray()
-    .then(function(err, products) {
-      if (err) throw err;
-
+    .then(function(products) {
       db.close();
 
       console.log('Disconnected from database');
@@ -107,6 +105,9 @@ app.get('/api/getProducts', function(req, res) {
       db.close();
 
       res.send(JSON.stringify({ success: true, data: products }));
+    })
+    .catch(function(err) {
+      console.log(err);
     });
   });
 });
