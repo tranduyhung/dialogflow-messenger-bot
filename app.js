@@ -54,6 +54,9 @@ function welcomeIntent(agent) {
       console.log('Response: ' + response);
 
       agent.add(response);
+    })
+    .catch(function(err) {
+      console.log(err);
     });
   });
 }
