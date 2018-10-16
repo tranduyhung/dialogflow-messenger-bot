@@ -23,7 +23,7 @@ MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
 app.get('/', (req, res) => res.send('Hello World!'));
 
 app.post('/', (req, res) => {
-  const agent = new WebhookClient({ req, res });
+  const agent = new WebhookClient({ request: req, response: res });
 
   console.log('Dialogflow Request headers: ' + JSON.stringify(req.headers));
   console.log('Dialogflow Request body: ' + JSON.stringify(req.body));
