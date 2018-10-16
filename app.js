@@ -19,8 +19,12 @@ var colorsCol = 'colors';
 var itemsCol = 'items';
 
 function welcomeIntent(agent) {
+  console.log('Entered welcomeIntent function');
+
   MongoClient.connect(dbUrl, dbOptions, function(err, db) {
     if (err) throw err;
+
+    console.log('Connected to database');
 
     let dbo = db.db(dbName);
 
@@ -29,7 +33,11 @@ function welcomeIntent(agent) {
 
       db.close();
 
+      console.log('Disconnected from database');
+
       let quantity = products.length;
+
+      console.log('Product quantity: ' + quantity);
 
       if (quantity == 0) return;
 
@@ -40,7 +48,9 @@ function welcomeIntent(agent) {
       }
 
       let response = 'Hello, welcome to our shop. We have ' + quantity + ' products: ';
-      response += names.join(', ') + '. Which product do you want to buy?';     
+      response += names.join(', ') + '. Which product do you want to buy?';
+
+      console.log('Response: ' + response);
 
       agent.add(response);
     });
