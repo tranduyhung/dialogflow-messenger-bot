@@ -21,7 +21,7 @@ var itemsCol = 'items';
 function welcomeIntent(agent) {
   console.log('Entered welcomeIntent function');
 
-  MongoClient.connect(dbUrl, dbOptions)
+  return MongoClient.connect(dbUrl, dbOptions)
   .then(function(db) {
     let dbo = db.db(dbName);
 
@@ -94,7 +94,8 @@ app.post('/', (req, res) => {
 
 app.get('/api/getProducts', function(req, res) {
   res.setHeader('Content-Type', 'application/json');
-  MongoClient.connect(dbUrl, dbOptions)
+
+  return MongoClient.connect(dbUrl, dbOptions)
   .then(function(db) {
     let dbo = db.db(dbName);
 
