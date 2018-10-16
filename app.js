@@ -21,41 +21,39 @@ var itemsCol = 'items';
 function welcomeIntent(agent) {
   console.log('Entered welcomeIntent function');
 
-  MongoClient.connect(dbUrl, dbOptions, function(err, db) {
-    if (err) throw err;
-
-    console.log('Connected to database');
-
+  MongoClient.connect(dbUrl, dbOptions)
+  .then(function(db) {
     let dbo = db.db(dbName);
 
-    dbo.collection(productsCol).find({}).toArray()
-    .then(function(products) {
-      db.close();
+    let products = dbo.collection(productsCol).find({}).toArray();
 
-      console.log('Disconnected from database');
+    db.close();
 
-      let quantity = products.length;
+    return products;
+  })
+  .then(function(products) {
+    let quantity = products.length;
 
-      console.log('Product quantity: ' + quantity);
+    console.log('Product quantity: ' + quantity);
 
-      if (quantity == 0) return;
+    if (quantity == 0) return;
 
-      let names = [];
+    let names = [];
 
-      for (let i = 0; i < quantity; i++) {
-        names.push(products[i].name);
-      }
+    for (let i = 0; i < quantity; i++) {
+      names.push(products[i].name);
+    }
 
-      let response = 'Hello, welcome to our shop. We have ' + quantity + ' products: ';
-      response += names.join(', ') + '. Which product do you want to buy?';
+    let response = 'Hello, welcome to our shop. We have ' + quantity + ' products: ';
+    response += names.join(', ') + '. Which product do you want to buy?';
 
-      console.log('Response: ' + response);
+    console.log('Response: ' + response);
 
-      agent.add(response);
-    })
-    .catch(function(err) {
-      console.log(err);
-    });
+    agent.add(response);
+
+  })
+  .catch(function(err) {
+    console.log(err);
   });
 }
 
@@ -96,19 +94,21 @@ app.post('/', (req, res) => {
 
 app.get('/api/getProducts', function(req, res) {
   res.setHeader('Content-Type', 'application/json');
-  MongoClient.connect(dbUrl, dbOptions, function(err, db) {
-    if (err) throw err;
+  MongoClient.connect(dbUrl, dbOptions)
+  .then(function(db) {
     let dbo = db.db(dbName);
 
-    return dbo.collection(productsCol).find({}).toArray()
-    .then(function(products) {
-      db.close();
+    let products = dbo.collection(productsCol).find({}).toArray();
 
-      res.send(JSON.stringify({ success: true, data: products }));
-    })
-    .catch(function(err) {
-      console.log(err);
-    });
+    db.close();
+
+    return products;
+  })
+  .then(function(products) {
+    res.send(JSON.stringify({ success: true, data: products }));
+  })
+  .catch(function(err) {
+    console.log(err);
   });
 });
 
