@@ -51,9 +51,9 @@ function welcomeIntent(agent) {
     let response = 'Hello, welcome to our shop. We have ' + quantity + ' products: ';
     response += names.join(', ') + '. Which product do you want to buy?';
 
-    return log(db, agent.query, response);
+    return [response, log(db, agent.query, response)];
   })
-  .then(function() {
+  .then(function(response) {
     db.close();
 
     return agent.add(response);
