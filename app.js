@@ -17,6 +17,7 @@ var productsCol = 'products';
 var sizesCol = 'sizes';
 var colorsCol = 'colors';
 var itemsCol = 'items';
+var logsCol = 'logs';
 
 function welcomeIntent(agent) {
   console.log('Entered welcomeIntent function');
