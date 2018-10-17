@@ -133,7 +133,7 @@ function productIntent(agent) {
     }
 
     let productExists = false;
-    let response;
+    let message;
 
     for (let i = 0; i < quantity; i++) {
       if (products[i] == product) {
@@ -170,25 +170,25 @@ function productIntent(agent) {
 
 function sizeIntent(agent) {
   var db;
-  var response = 'Entered sizeIntent function';
+  var message = 'Entered sizeIntent function';
 
   return MongoClient.connect(dbUrl, dbOptions)
   .then(function(_db) {
     db = _db;
 
-    return response(db, agent, response);
+    return response(db, agent, message);
   });
 }
 
 function colorIntent(agent) {
   var db;
-  var response = 'Entered colorIntent function';
+  var message = 'Entered colorIntent function';
 
   return MongoClient.connect(dbUrl, dbOptions)
   .then(function(_db) {
     db = _db;
 
-    return response(db, agent, response);
+    return response(db, agent, message);
   });
 }
 
