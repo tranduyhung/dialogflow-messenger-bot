@@ -78,7 +78,13 @@ app.get('/', (req, res) => res.send('Hello World!'));
 app.post('/', (req, res) => {
   const agent = new WebhookClient({ request: req, response: res });
 
-  console.log(agent);
+  console.log('webhookClient.intent: ' + agent.intent);
+  console.log('webhookClient.action: ' + agent.action);
+  console.log('webhookClient.parameters: ' + agent.parameters);
+  console.log('webhookClient.contexts: ' + agent.contexts);
+  console.log('webhookClient.requestSource: ' + agent.requestSource);
+  console.log('webhookClient.originalRequest: ' + agent.originalRequest);
+  console.log('webhookClient.query: ' + agent.query);
 
   //console.log('Dialogflow Request headers: ' + JSON.stringify(req.headers));
   console.log('Dialogflow Request body: ' + JSON.stringify(req.body));
