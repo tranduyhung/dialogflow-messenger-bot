@@ -26,7 +26,7 @@ function response(db, agent, message) {
   return dbo.collection(logsCol).insertOne(log).then(function() {
     db.close();
 
-    return agent.add(response);
+    return agent.add(message);
   });
 }
 
