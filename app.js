@@ -57,20 +57,22 @@ function welcomeIntent(agent) {
 }
 
 function fallbackIntent(agent) {
+  console.log('Entered fallbackIntent function');
   agent.add('This is a fallback message from Node.js!');
 }
 
 function productIntent(agent) {
-
+  console.log('Entered productIntent function');
 }
 
 function sizeIntent(agent) {
-
+  console.log('Entered sizeIntent function');
 }
 
 function colorIntent(agent) {
-
+  console.log('Entered colorIntent function');
 }
+
 app.get('/', (req, res) => res.send('Hello World!'));
 
 app.post('/', (req, res) => {
