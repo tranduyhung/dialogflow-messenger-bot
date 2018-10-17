@@ -83,7 +83,7 @@ app.post('/', (req, res) => {
   console.log('webhookClient.action:');
   console.log(agent.action);
   console.log('webhookClient.parameters:');
-  consoole.log(agent.parameters);
+  console.log(agent.parameters);
   console.log('webhookClient.contexts:')
   console.log(agent.contexts);
   console.log('webhookClient.requestSource:');
