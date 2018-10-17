@@ -19,6 +19,12 @@ var colorsCol = 'colors';
 var itemsCol = 'items';
 var logsCol = 'logs';
 
+function log(db, input, output) {
+  var log = { input: input, output: output, timestamp: Date.now() };
+  let dbo = db.db(dbName);
+  return dbo.collection(logsCol).insertOne(log);
+}
+
 function welcomeIntent(agent) {
   console.log('Entered welcomeIntent function');
 
@@ -34,8 +40,6 @@ function welcomeIntent(agent) {
   .then(function(products) {
     let quantity = products.length;
 
-    console.log('Product quantity: ' + quantity);
-
     if (quantity == 0) return;
 
     let names = [];
@@ -47,12 +51,9 @@ function welcomeIntent(agent) {
     let response = 'Hello, welcome to our shop. We have ' + quantity + ' products: ';
     response += names.join(', ') + '. Which product do you want to buy?';
 
-    console.log('Response: ' + response);
-
-    var log = { input: agent.query, output: response, timestamp: Date.now() };
-
-    let dbo = db.db(dbName);
-    dbo.collection(logsCol).insertOne(log);
+    return log(db, agent.query, response);
+  })
+  .then(function() {
     db.close();
 
     return agent.add(response);
