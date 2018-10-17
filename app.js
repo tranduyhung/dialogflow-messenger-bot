@@ -19,6 +19,13 @@ var colorsCol = 'colors';
 var itemsCol = 'items';
 var logsCol = 'logs';
 
+function response(db, agent, message) {
+  return log(db, agent.query, message).then(function() {
+    db.close();
+
+    return agent.add(response);
+  });
+}
 function log(db, input, output) {
   var log = { input: input, output: output, timestamp: Date.now() };
   let dbo = db.db(dbName);
@@ -28,7 +35,52 @@ function log(db, input, output) {
 function getProducts(db) {
   let dbo = db.db(dbName);
 
-  return dbo.collection(productsCol).find({}).toArray();
+  return dbo.collection(productsCol).find({}).toArray().then(function(items) {
+    let quantity = items.length;
+    let names = [];
+
+    if (quantity == 0) return names;
+
+    for (let i = 0; i < quantity; i++) {
+      names.push(items[i].name);
+    }
+
+    return names;
+  });
+}
+
+function getSizes(db) {
+  let dbo = db.db(dbName);
+
+  return dbo.collection(sizesCol).find({}).toArray().then(function(items) {
+    let quantity = items.length;
+    let names = [];
+
+    if (quantity == 0) return names;
+
+    for (let i = 0; i < quantity; i++) {
+      names.push(items[i].name);
+    }
+
+    return names;
+  });
+}
+
+function getColors(db) {
+  let dbo = db.db(dbName);
+
+  return dbo.collection(colorsCol).find({}).toArray().then(function(items) {
+    let quantity = items.length;
+    let names = [];
+
+    if (quantity == 0) return names;
+
+    for (let i = 0; i < quantity; i++) {
+      names.push(items[i].name);
+    }
+
+    return names;
+  });
 }
 
 function welcomeIntent(agent) {
@@ -40,24 +92,10 @@ function welcomeIntent(agent) {
     return getProducts(db);
   })
   .then(function(products) {
-    let quantity = products.length;
+    let message = 'Hello, welcome to our shop. We have ' + quantity + ' products: ';
+    message += products.join(', ') + '. Which product do you want to buy?';
 
-    if (quantity == 0) return;
-
-    let names = [];
-
-    for (let i = 0; i < quantity; i++) {
-      names.push(products[i].name);
-    }
-
-    let response = 'Hello, welcome to our shop. We have ' + quantity + ' products: ';
-    response += names.join(', ') + '. Which product do you want to buy?';
-
-    return log(db, agent.query, response).then(function() {
-      db.close();
-
-      return agent.add(response);
-    });
+    return response(db, agent.query, message);
   })
   .catch(function(err) {
     console.log(err);
@@ -66,23 +104,19 @@ function welcomeIntent(agent) {
 
 function fallbackIntent(agent) {
   var db;
-  var response = 'Entered fallbackIntent function';
+  var message = 'Entered fallbackIntent function';
 
   return MongoClient.connect(dbUrl, dbOptions)
   .then(function(_db) {
     db = _db;
 
-    return log(db, agent.query, response).then(function() {
-      db.close();
-
-      return agent.add(response);
-    });
+    return response(db, agent.query, message);
   });
 }
 
 function productIntent(agent) {
   var db;
-  var response = '';
+  var message = '';
   var product = (typeof agent.parameters.product !== 'undefined') ? agent.parameters.product : '';
 
   return MongoClient.connect(dbUrl, dbOptions)
@@ -94,33 +128,44 @@ function productIntent(agent) {
   .then(function(products) {
     let quantity = products.length;
 
-    if (quantity == 0) return;
+    if (quantity == 0) {
+      let message = 'We\'re sorry, there is something wrong with our system, please try again later.';
 
-    let names = [];
+      return response(db, agent.query, message);
+    }
+
     let productExists = false;
     let response;
 
     for (let i = 0; i < quantity; i++) {
-      let name = products[i].name;
-      names.push(name);
-
-      if (name == product) {
+      if (products[i] == product) {
         productExists = true;
+        break;
       }
     }
 
     if (productExists) {
-      response = 'Product ' + product + ' exists';
+      return getSizes(db).then(function(sizes) {
+        let quantity = sizes.length;
+        let message;
+
+        if (quantity == 0) {
+          message = 'We\'re sorry, there is something wrong with our system, please try again later.';
+
+          return response(db, agent.query, message);
+        } else {
+          message = 'You want to buy a ' + product + '. Which size would you like? ';
+          message += products.join(', ') + '?';
+        }
+
+        return response(db, agent.query, message);
+      });
     } else {
-      response = 'Sorry, I don\'t get that. We have ' + quantity + ' products: ';
-      response += names.join(', ') + '. Which product do you want to buy?';
+      message = 'Sorry, I don\'t get that. We have ' + quantity + ' products: ';
+      message += products.join(', ') + '. Which product do you want to buy?';
+
+      return response(db, agent.query, message);
     }
-
-    return log(db, agent.query, response).then(function() {
-      db.close();
-
-      return agent.add(response);
-    });
   })
   .catch(function(err) {
     console.log(err);
