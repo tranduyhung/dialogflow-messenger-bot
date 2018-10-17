@@ -151,7 +151,7 @@ function productIntent(agent) {
           message = 'We\'re sorry, there is something wrong with our system, please try again later.';
         } else {
           message = 'You want to buy a ' + product + '. Which size would you like? ';
-          message += products.join(', ') + '?';
+          message += sizes.join(', ') + '?';
         }
 
         return response(db, agent, message);
