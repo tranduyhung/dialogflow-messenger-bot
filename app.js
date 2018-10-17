@@ -47,6 +47,7 @@ function welcomeIntent(agent) {
 
     var log = { input: agent.query, output: response, timestamp: Date.now() };
 
+    let dbo = db.db(dbName);
     dbo.collection(logsCol).insertOne(log)
     .then(function() {
       db.close();
