@@ -89,8 +89,31 @@ function productIntent(agent) {
   .then(function(_db) {
     db = _db;
 
-    if (product == '') {
-      agent.add('Sorry, I don\'t get that.');
+    return getProducts(db);
+  })
+  .then(function(products) {
+    let quantity = products.length;
+
+    if (quantity == 0) return;
+
+    let names = [];
+    let productExists = false;
+    let response;
+
+    for (let i = 0; i < quantity; i++) {
+      let name = products[i].name;
+      names.push(name);
+
+      if (name == product) {
+        productExists = true;
+      }
+    }
+
+    if (productExists) {
+      response = 'Product ' + product + ' exists';
+    } else {
+      response = 'Sorry, I don\'t get that. We have ' + quantity + ' products: ';
+      response += names.join(', ') + '. Which product do you want to buy?';
     }
 
     return log(db, agent.query, response).then(function() {
@@ -98,6 +121,9 @@ function productIntent(agent) {
 
       return agent.add(response);
     });
+  })
+  .catch(function(err) {
+    console.log(err);
   });
 }
 
