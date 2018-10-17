@@ -37,7 +37,7 @@ function welcomeIntent(agent) {
   return MongoClient.connect(dbUrl, dbOptions)
   .then(function(_db) {
     db = _db;
-    return getProducts();
+    return getProducts(db);
   })
   .then(function(products) {
     let quantity = products.length;
