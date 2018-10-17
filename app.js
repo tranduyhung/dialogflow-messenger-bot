@@ -20,16 +20,14 @@ var itemsCol = 'items';
 var logsCol = 'logs';
 
 function response(db, agent, message) {
-  return log(db, agent.query, message).then(function() {
+  var log = { input: agent.query, output: message, timestamp: Date.now() };
+  let dbo = db.db(dbName);
+
+  return dbo.collection(logsCol).insertOne(log).then(function() {
     db.close();
 
     return agent.add(response);
   });
-}
-function log(db, input, output) {
-  var log = { input: input, output: output, timestamp: Date.now() };
-  let dbo = db.db(dbName);
-  return dbo.collection(logsCol).insertOne(log);
 }
 
 function getProducts(db) {
@@ -178,11 +176,7 @@ function sizeIntent(agent) {
   .then(function(_db) {
     db = _db;
 
-    return log(db, agent.query, response).then(function() {
-      db.close();
-
-      return agent.add(response);
-    });
+    return response(db, agent, response);
   });
 }
 
@@ -194,13 +188,8 @@ function colorIntent(agent) {
   .then(function(_db) {
     db = _db;
 
-    return log(db, agent.query, response).then(function() {
-      db.close();
-
-      return agent.add(response);
-    });
+    return response(db, agent, response);
   });
-
 }
 
 app.get('/', (req, res) => res.send('Hello World!'));
