@@ -25,17 +25,19 @@ function log(db, input, output) {
   return dbo.collection(logsCol).insertOne(log);
 }
 
-function welcomeIntent(agent) {
-  console.log('Entered welcomeIntent function');
+function getProducts(db) {
+  let dbo = db.db(dbName);
 
+  return dbo.collection(productsCol).find({}).toArray();
+}
+
+function welcomeIntent(agent) {
   var db;
 
   return MongoClient.connect(dbUrl, dbOptions)
   .then(function(_db) {
     db = _db;
-    let dbo = db.db(dbName);
-
-    return dbo.collection(productsCol).find({}).toArray();
+    return getProducts();
   })
   .then(function(products) {
     let quantity = products.length;
@@ -80,11 +82,16 @@ function fallbackIntent(agent) {
 
 function productIntent(agent) {
   var db;
-  var response = 'Entered productIntent function';
+  var response = '';
+  var product = (typeof agent.parameters.product !== 'undefined') ? agent.parameters.product : '';
 
   return MongoClient.connect(dbUrl, dbOptions)
   .then(function(_db) {
     db = _db;
+
+    if (product == '') {
+      agent.add('Sorry, I don\'t get that.');
+    }
 
     return log(db, agent.query, response).then(function() {
       db.close();
