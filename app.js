@@ -58,7 +58,7 @@ function welcomeIntent(agent) {
     db.close();
 
     return agent.add(response);
-  });
+  })
   .catch(function(err) {
     console.log(err);
   });
