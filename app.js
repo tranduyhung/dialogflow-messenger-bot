@@ -92,7 +92,7 @@ function welcomeIntent(agent) {
     return getProducts(db);
   })
   .then(function(products) {
-    let message = 'Hello, welcome to our shop. We have ' + quantity + ' products: ';
+    let message = 'Hello, welcome to our shop. We have ' + products.length + ' products: ';
     message += products.join(', ') + '. Which product do you want to buy?';
 
     return response(db, agent.query, message);
@@ -151,8 +151,6 @@ function productIntent(agent) {
 
         if (quantity == 0) {
           message = 'We\'re sorry, there is something wrong with our system, please try again later.';
-
-          return response(db, agent.query, message);
         } else {
           message = 'You want to buy a ' + product + '. Which size would you like? ';
           message += products.join(', ') + '?';
