@@ -21,8 +21,11 @@ var itemsCol = 'items';
 function welcomeIntent(agent) {
   console.log('Entered welcomeIntent function');
 
+  var db;
+
   return MongoClient.connect(dbUrl, dbOptions)
-  .then(function(db) {
+  .then(function(_db) {
+    db = _db;
     let dbo = db.db(dbName);
 
     return dbo.collection(productsCol).find({}).toArray();
@@ -116,9 +119,11 @@ app.post('/', (req, res) => {
 
 app.get('/api/getProducts', function(req, res) {
   res.setHeader('Content-Type', 'application/json');
+  var db;
 
   return MongoClient.connect(dbUrl, dbOptions)
-  .then(function(db) {
+  .then(function(_db) {
+    db = _db;
     let dbo = db.db(dbName);
 
     return dbo.collection(productsCol).find({}).toArray();
