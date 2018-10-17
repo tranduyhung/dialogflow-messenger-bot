@@ -25,11 +25,7 @@ function welcomeIntent(agent) {
   .then(function(db) {
     let dbo = db.db(dbName);
 
-    let products = dbo.collection(productsCol).find({}).toArray();
-
-    db.close();
-
-    return products;
+    return dbo.collection(productsCol).find({}).toArray();
   })
   .then(function(products) {
     let quantity = products.length;
@@ -49,7 +45,14 @@ function welcomeIntent(agent) {
 
     console.log('Response: ' + response);
 
-    return agent.add(response);
+    var log = { input: agent.query, output: response, timestamp: Date.now() };
+
+    dbo.collection(logsCol).insertOne(log)
+    .then(function() {
+      db.close();
+
+      return agent.add(response);
+    });
   })
   .catch(function(err) {
     console.log(err);
@@ -78,6 +81,7 @@ app.get('/', (req, res) => res.send('Hello World!'));
 app.post('/', (req, res) => {
   const agent = new WebhookClient({ request: req, response: res });
 
+  /*
   console.log('webhookClient.intent:');
   console.log(agent.intent);
   console.log('webhookClient.action:');
@@ -92,9 +96,10 @@ app.post('/', (req, res) => {
   console.log(agent.originalRequest);
   console.log('webhookClient.query:')
   console.log(agent.query);
+  */
 
   //console.log('Dialogflow Request headers: ' + JSON.stringify(req.headers));
-  console.log('Dialogflow Request body: ' + JSON.stringify(req.body));
+  //console.log('Dialogflow Request body: ' + JSON.stringify(req.body));
 
   let intentMap = new Map();
   intentMap.set('Default Welcome Intent', welcomeIntent);
@@ -115,14 +120,12 @@ app.get('/api/getProducts', function(req, res) {
   .then(function(db) {
     let dbo = db.db(dbName);
 
-    let products = dbo.collection(productsCol).find({}).toArray();
-
-    db.close();
-
-    return products;
+    return dbo.collection(productsCol).find({}).toArray();
   })
   .then(function(products) {
     res.send(JSON.stringify({ success: true, data: products }));
+
+    db.close();
   })
   .catch(function(err) {
     console.log(err);
