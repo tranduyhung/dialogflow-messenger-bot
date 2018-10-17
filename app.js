@@ -32,7 +32,9 @@ function welcomeIntent(agent) {
   .then(function(db) {
     let dbo = db.db(dbName);
 
-    return [db, dbo.collection(productsCol).find({}).toArray()];
+    let products = dbo.collection(productsCol).find({}).toArray();
+
+    return [db, products];
   })
   .then(function(db, products) {
     let quantity = products.length;
