@@ -28,15 +28,16 @@ function log(db, input, output) {
 function welcomeIntent(agent) {
   console.log('Entered welcomeIntent function');
 
+  var db;
+
   return MongoClient.connect(dbUrl, dbOptions)
-  .then(function(db) {
+  .then(function(_db) {
+    db = _db;
     let dbo = db.db(dbName);
 
-    let products = dbo.collection(productsCol).find({}).toArray();
-
-    return [db, products];
+    return dbo.collection(productsCol).find({}).toArray();
   })
-  .then(function(db, products) {
+  .then(function(products) {
     let quantity = products.length;
 
     if (quantity == 0) return;
@@ -50,9 +51,10 @@ function welcomeIntent(agent) {
     let response = 'Hello, welcome to our shop. We have ' + quantity + ' products: ';
     response += names.join(', ') + '. Which product do you want to buy?';
 
-    return [db, response, log(db, agent.query, response)];
-  })
-  .then(function(db, response) {
+    log(db, agent.query, response);
+
+    let dbo = db.db(dbName);
+    dbo.collection(logsCol).insertOne(log);
     db.close();
 
     return agent.add(response);
