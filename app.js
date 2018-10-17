@@ -93,7 +93,7 @@ function welcomeIntent(agent) {
     let message = 'Hello, welcome to our shop. We have ' + products.length + ' products: ';
     message += products.join(', ') + '. Which product do you want to buy?';
 
-    return response(db, agent.query, message);
+    return response(db, agent, message);
   })
   .catch(function(err) {
     console.log(err);
@@ -108,7 +108,7 @@ function fallbackIntent(agent) {
   .then(function(_db) {
     db = _db;
 
-    return response(db, agent.query, message);
+    return response(db, agent, message);
   });
 }
 
@@ -129,7 +129,7 @@ function productIntent(agent) {
     if (quantity == 0) {
       let message = 'We\'re sorry, there is something wrong with our system, please try again later.';
 
-      return response(db, agent.query, message);
+      return response(db, agent, message);
     }
 
     let productExists = false;
@@ -154,13 +154,13 @@ function productIntent(agent) {
           message += products.join(', ') + '?';
         }
 
-        return response(db, agent.query, message);
+        return response(db, agent, message);
       });
     } else {
       message = 'Sorry, I don\'t get that. We have ' + quantity + ' products: ';
       message += products.join(', ') + '. Which product do you want to buy?';
 
-      return response(db, agent.query, message);
+      return response(db, agent, message);
     }
   })
   .catch(function(err) {
