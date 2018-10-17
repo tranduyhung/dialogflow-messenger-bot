@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 var MongoClient = require('mongodb').MongoClient;
 var dbUrl = process.env.MONGODB_URI;
 var dbOptions = { useNewUrlParser: true };
-var dbName = 'heroku_j0v9j0rg';
+var dbName = process.env.MONGODB_DB;
 var productsCol = 'products';
 var sizesCol = 'sizes';
 var colorsCol = 'colors';

@@ -5,16 +5,21 @@ var productsCol = 'products';
 var sizesCol = 'sizes';
 var colorsCol = 'colors';
 var itemsCol = 'items';
+var logsCol = 'logs';
 var url = process.env.MONGODB_URI;
+var dbName = process.env.MONGODB_DB;
 
 MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
   if (err) throw err;
 
-  var dbo = db.db('heroku_j0v9j0rg');
+  var dbo = db.db(dbName);
 
   dbo.createCollection(productsCol)
   .then(function() {
     return dbo.collection(productsCol).drop();
+  })
+  .then(function() {
+    return dbo.createCollection(productsCol);
   })
   .then(function() {
     return dbo.createCollection(sizesCol);
@@ -33,6 +38,15 @@ MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
   })
   .then(function() {
     return dbo.createCollection(colorsCol);
+  })
+  .then(function() {
+    return dbo.createCollection(logsCol);
+  })
+  .then(function() {
+    return dbo.collection(logsCol).drop();
+  })
+  .then(function() {
+    return dbo.createCollection(logsCol);
   })
   .then(function() {
     var tshirt = { name: 'T-shirt' };
