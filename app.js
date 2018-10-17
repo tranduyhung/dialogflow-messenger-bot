@@ -51,13 +51,11 @@ function welcomeIntent(agent) {
     let response = 'Hello, welcome to our shop. We have ' + quantity + ' products: ';
     response += names.join(', ') + '. Which product do you want to buy?';
 
-    log(db, agent.query, response);
+    return log(db, agent.query, response).then(function() {
+      db.close();
 
-    let dbo = db.db(dbName);
-    dbo.collection(logsCol).insertOne(log);
-    db.close();
-
-    return agent.add(response);
+      return agent.add(response);
+    });
   })
   .catch(function(err) {
     console.log(err);
@@ -65,6 +63,12 @@ function welcomeIntent(agent) {
 }
 
 function fallbackIntent(agent) {
+  var db;
+
+  return MongoClient.connect(dbUrl, dbOptions)
+  .then(function(_db) {
+    db = _db;
+  });
   console.log('Entered fallbackIntent function');
   agent.add('This is a fallback message from Node.js!');
 }
