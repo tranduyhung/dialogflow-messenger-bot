@@ -56,7 +56,7 @@ function welcomeIntent(agent) {
       return response;
     });
   })
-  .then(function() {
+  .then(function(response) {
     db.close();
 
     return agent.add(response);
