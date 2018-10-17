@@ -64,25 +64,67 @@ function welcomeIntent(agent) {
 
 function fallbackIntent(agent) {
   var db;
+  var response = 'Entered fallbackIntent function';
 
   return MongoClient.connect(dbUrl, dbOptions)
   .then(function(_db) {
     db = _db;
+
+    return log(db, agent.query, response).then(function() {
+      db.close();
+
+      return agent.add(response);
+    });
   });
-  console.log('Entered fallbackIntent function');
-  agent.add('This is a fallback message from Node.js!');
 }
 
 function productIntent(agent) {
-  console.log('Entered productIntent function');
+  var db;
+  var response = 'Entered productIntent function';
+
+  return MongoClient.connect(dbUrl, dbOptions)
+  .then(function(_db) {
+    db = _db;
+
+    return log(db, agent.query, response).then(function() {
+      db.close();
+
+      return agent.add(response);
+    });
+  });
 }
 
 function sizeIntent(agent) {
-  console.log('Entered sizeIntent function');
+  var db;
+  var response = 'Entered sizeIntent function';
+
+  return MongoClient.connect(dbUrl, dbOptions)
+  .then(function(_db) {
+    db = _db;
+
+    return log(db, agent.query, response).then(function() {
+      db.close();
+
+      return agent.add(response);
+    });
+  });
 }
 
 function colorIntent(agent) {
-  console.log('Entered colorIntent function');
+  var db;
+  var response = 'Entered colorIntent function';
+
+  return MongoClient.connect(dbUrl, dbOptions)
+  .then(function(_db) {
+    db = _db;
+
+    return log(db, agent.query, response).then(function() {
+      db.close();
+
+      return agent.add(response);
+    });
+  });
+
 }
 
 app.get('/', (req, res) => res.send('Hello World!'));
