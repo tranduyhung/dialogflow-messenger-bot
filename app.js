@@ -20,12 +20,20 @@ var colorsCol = 'colors';
 var logsCol = 'logs';
 var ordersCol = 'orders';
 
-function response(db, agent, message, suggestions) {
+function response(db, agent, message, suggestions, card) {
+  if (typeof suggestions == 'undefined') {
+    suggestions = [];
+  }
+
   var log = { input: agent.query, output: message, suggestions: JSON.stringify(suggestions), timestamp: Date.now() };
   let dbo = db.db(dbName);
 
   return dbo.collection(logsCol).insertOne(log).then(function() {
     agent.add(message);
+
+    if (typeof card == 'Card') {
+      agent.add(card);
+    }
 
     if (suggestions.length) {
       for (let i = 0; i < suggestions.length; i++) {
@@ -146,15 +154,6 @@ function welcomeIntent(agent) {
     let message = 'Hello, welcome to our shop. We have ' + products.length + ' products: ';
     message += products.join(', ') + '. Which product do you want to buy?';
 
-    /*
-    return agent.add(new Card({
-      title: 'Card Title',
-      text: 'Card Text',
-      buttonText: 'Button Title',
-      buttonUrl: 'https://www.google.com'
-    }));
-    */
-
     return response(db, agent, message, products);
   })
   .catch(function(err) {
@@ -216,13 +215,13 @@ function productIntent(agent) {
           message += sizes.join(', ') + '?';
         }
 
-        return response(db, agent, message);
+        return response(db, agent, message, sizes);
       });
     } else {
       message = 'Sorry, I don\'t get that. We have ' + quantity + ' products: ';
       message += products.join(', ') + '. Which product do you want to buy?';
 
-      return response(db, agent, message);
+      return response(db, agent, message, products);
     }
   })
   .catch(function(err) {
@@ -273,13 +272,13 @@ function sizeIntent(agent) {
           message += colors.join(', ') + '. Which color do you want?';
         }
 
-        return response(db, agent, message);
+        return response(db, agent, message, colors);
       });
     } else {
       message = 'Sorry, I don\'t get that. We have ' + quantity + ' sizes: ';
       message += sizes.join(', ') + '. Which size do you want to buy?';
 
-      return response(db, agent, message);
+      return response(db, agent, message, sizes);
     }
   })
   .catch(function(err) {
@@ -320,16 +319,23 @@ function colorIntent(agent) {
     }
 
     if (colorExists) {
-      message = 'You have just bought a ' + color + ' ' + product + ' in size ' + size + '. Thank you for your purchase!';
+      message = 'You have just bought a ' + color + ' ' + product + ' in size ' + size + '. Here is your invoice. Thank you for your purchase!';
+
+      let card = new Card({
+        title: 'Invoice 12345',
+        text: 'Invoice for order 12345',
+        buttonText: 'View',
+        buttonUrl: 'https://www.google.com'
+      });
 
       return saveOrder(db, agent, product, size, color).then(function() {
-        return response(db, agent, message);
+        return response(db, agent, message, [], card);
       });
     } else {
       message = 'Sorry, I don\'t get that. We have ' + quantity + ' colors: ';
       message += colors.join(', ') + '. Which color do you want to buy?';
 
-      return response(db, agent, message);
+      return response(db, agent, message, colors);
     }
   })
   .catch(function(err) {
