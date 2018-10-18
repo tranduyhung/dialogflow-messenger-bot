@@ -31,6 +31,8 @@ function response(db, agent, message, suggestions, card) {
   return dbo.collection(logsCol).insertOne(log).then(function() {
     agent.add(message);
 
+    console.log(card);
+
     if (typeof card == 'Card') {
       agent.add(card);
     }
