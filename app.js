@@ -16,8 +16,8 @@ var dbName = process.env.MONGODB_DB;
 var productsCol = 'products';
 var sizesCol = 'sizes';
 var colorsCol = 'colors';
-var itemsCol = 'items';
 var logsCol = 'logs';
+var ordersCol = 'orders';
 
 function response(db, agent, message) {
   var log = { input: agent.query, output: message, timestamp: Date.now() };
@@ -28,6 +28,44 @@ function response(db, agent, message) {
 
     return agent.add(message);
   });
+}
+
+function saveOrder(db, agent, productName, sizeName, colorName) {
+  var productId;
+  var sizeId;
+  var colorId;
+  var message = 'We\'re sorry, there is something wrong with our system, please try again later.';
+
+  return dbo.collection(productsCol).findOne({name: productName})
+    .then(function(product) {
+      if (typeof product._id == 'undefined') {
+        return agent.add(message);
+      }
+
+      productId = product._id;
+
+      return dbo.collection(sizesCol).findOne({name: sizeName});
+    })
+    .then(function(size) {
+      if (typeof size._id == 'undefined') {
+        return agent.add(message);
+      }
+
+      sizeId = size._id;
+
+      return dbo.collection(colorsCol).findOne({name: colorName});
+    })
+    .then(function(color) {
+      if (typeof color._id == 'undefined') {
+        return agent.add(message);
+      }
+
+      colorId = color._id;
+
+      var order = { name: 'T-shirt' };
+
+      return dbo.collection(productsCol).insertOne(tshirt);
+    });
 }
 
 function getProducts(db) {
@@ -258,9 +296,11 @@ function colorIntent(agent) {
     }
 
     if (colorExists) {
-      message = 'You want to buy a ' + color + ' ' + product + ' in size ' + size + '.';
+      message = 'You have just bought a ' + color + ' ' + product + ' in size ' + size + '. Thank you for your purchase!';
 
-      return response(db, agent, message);
+      return saveOrder(db, agent, product, size, color).then(function() {
+        return response(db, agent, message);
+      });
     } else {
       message = 'Sorry, I don\'t get that. We have ' + quantity + ' colors: ';
       message += colors.join(', ') + '. Which color do you want to buy?';
@@ -365,7 +405,7 @@ app.get('/api/getSizes', function(req, res) {
   });
 });
 
-app.get('/api/getItems', function(req, res) {
+app.get('/api/getOrders', function(req, res) {
   res.setHeader('Content-Type', 'application/json');
 
   MongoClient.connect(dbUrl, dbOptions, function(err, db) {
@@ -373,12 +413,12 @@ app.get('/api/getItems', function(req, res) {
 
     let dbo = db.db(dbName);
 
-    dbo.collection(itemsCol).find({}).toArray(function(err, items) {
+    dbo.collection(ordersCol).find({}).toArray(function(err, orders) {
       if (err) throw err;
 
       db.close();
 
-      res.send(JSON.stringify({ success: true, data: items }));
+      res.send(JSON.stringify({ success: true, data: orders }));
     });
   });
 });

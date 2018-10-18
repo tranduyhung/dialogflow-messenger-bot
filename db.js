@@ -4,7 +4,7 @@ var MongoClient = require('mongodb').MongoClient;
 var productsCol = 'products';
 var sizesCol = 'sizes';
 var colorsCol = 'colors';
-var itemsCol = 'items';
+var ordersCol = 'orders';
 var logsCol = 'logs';
 var url = process.env.MONGODB_URI;
 var dbName = process.env.MONGODB_DB;
@@ -47,6 +47,15 @@ MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
   })
   .then(function() {
     return dbo.createCollection(logsCol);
+  })
+  .then(function() {
+    return dbo.createCollection(ordersCol);
+  })
+  .then(function() {
+    return dbo.collection(ordersCol).drop();
+  })
+  .then(function() {
+    return dbo.createCollection(ordersCol);
   })
   .then(function() {
     var tshirt = { name: 'T-shirt' };
