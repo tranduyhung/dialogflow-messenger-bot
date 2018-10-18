@@ -25,9 +25,9 @@ function response(db, agent, message) {
   let dbo = db.db(dbName);
 
   return dbo.collection(logsCol).insertOne(log).then(function() {
-    db.close();
+    return db.close();
 
-    return agent.add(message);
+    // return agent.add(message);
   });
 }
 
@@ -147,6 +147,7 @@ function welcomeIntent(agent) {
     }));
     */
 
+    agent.add(message);
     agent.add(new Suggestion(`Quick Reply`));
     agent.add(new Suggestion(`Suggestion`));
 
