@@ -20,11 +20,19 @@ var colorsCol = 'colors';
 var logsCol = 'logs';
 var ordersCol = 'orders';
 
-function response(db, agent, message) {
-  var log = { input: agent.query, output: message, timestamp: Date.now() };
+function response(db, agent, message, suggestions) {
+  var log = { input: agent.query, output: message, suggestions: JSON.stringify(suggestions), timestamp: Date.now() };
   let dbo = db.db(dbName);
 
   return dbo.collection(logsCol).insertOne(log).then(function() {
+    agent.add(message);
+
+    if (suggestions.length) {
+      for (let i = 0; i < suggestions.length; i++) {
+        agent.add(new Suggestion(suggestions[i]));
+      }
+    }
+
     return db.close();
 
     // return agent.add(message);
@@ -147,11 +155,7 @@ function welcomeIntent(agent) {
     }));
     */
 
-    agent.add(message);
-    agent.add(new Suggestion(`Quick Reply`));
-    agent.add(new Suggestion(`Suggestion`));
-
-    return response(db, agent, message);
+    return response(db, agent, message, products);
   })
   .catch(function(err) {
     console.log(err);
