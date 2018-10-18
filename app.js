@@ -1,7 +1,7 @@
 require('dotenv').config();
 var port = process.env.PORT || 3000;
 
-const { WebhookClient } = require('dialogflow-fulfillment');
+const { WebhookClient, Card, Button } = require('dialogflow-fulfillment');
 const bodyParser = require('body-parser');
 const express = require('express');
 
@@ -136,6 +136,21 @@ function welcomeIntent(agent) {
   .then(function(products) {
     let message = 'Hello, welcome to our shop. We have ' + products.length + ' products: ';
     message += products.join(', ') + '. Which product do you want to buy?';
+
+    return agent.add(new BasicCard({
+      title: 'Card Title',
+      text: 'Card Text',
+      image: {
+        url: 'https://www.gstatic.com/devrel-devsite/v093b7aa18b25177253b89e71ebbebc6545f1e1e743b427cede8842a6f63894fd/dialogflow/images/lockup.svg',
+        accessibilityText: 'Card Image',
+      },
+      buttons: new Button({
+        title: 'Button Title',
+        url: 'https://www.google.com',
+      }),
+    }));
+
+    return;
 
     return response(db, agent, message);
   })
