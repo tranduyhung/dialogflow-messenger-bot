@@ -138,12 +138,28 @@ function welcomeIntent(agent) {
     let message = 'Hello, welcome to our shop. We have ' + products.length + ' products: ';
     message += products.join(', ') + '. Which product do you want to buy?';
 
+    /*
     return agent.add(new Card({
       title: 'Card Title',
       text: 'Card Text',
       buttonText: 'Button Title',
       buttonUrl: 'https://www.google.com'
     }));
+    */
+
+    return agent.add({"messages": [
+      {
+        "platform": "facebook",
+        "replies": [
+          "Quick reply 1",
+          "Quick reply 2",
+          "Quick reply 3"
+        ],
+        "title": "Quick Reply Title",
+        "type": 2
+      }
+    ]
+    });
 
     return response(db, agent, message);
   })
