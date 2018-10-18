@@ -138,6 +138,7 @@ function welcomeIntent(agent) {
     let message = 'Hello, welcome to our shop. We have ' + products.length + ' products: ';
     message += products.join(', ') + '. Which product do you want to buy?';
 
+    /*
     return agent.add(new Card({
       title: 'Card Title',
       text: 'Card Text',
@@ -150,8 +151,10 @@ function welcomeIntent(agent) {
         url: 'https://www.google.com',
       }),
     }));
+    */
 
-    return;
+    let card = new Card(); card.setImage('https://assistant.google.com/static/images/molecule/Molecule-Formation-stop.png');
+    return agent.add(card);
 
     return response(db, agent, message);
   })
