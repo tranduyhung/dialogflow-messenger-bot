@@ -170,13 +170,58 @@ function productIntent(agent) {
 
 function sizeIntent(agent) {
   var db;
-  var message = 'Entered sizeIntent function';
+  var message = '';
+  var product = (typeof agent.parameters.product !== 'undefined') ? agent.parameters.product : '';
+  var size = (typeof agent.parameters.size !== 'undefined') ? agent.parameters.size : '';
 
   return MongoClient.connect(dbUrl, dbOptions)
   .then(function(_db) {
     db = _db;
 
-    return response(db, agent, message);
+    return getSizes(db);
+  })
+  .then(function(sizes) {
+    let quantity = sizes.length;
+
+    if (quantity == 0) {
+      let message = 'We\'re sorry, there is something wrong with our system, please try again later.';
+
+      return response(db, agent, message);
+    }
+
+    let sizeExists = false;
+    let message;
+
+    for (let i = 0; i < quantity; i++) {
+      if (sizes[i] == size) {
+        sizeExists = true;
+        break;
+      }
+    }
+
+    if (sizeExists) {
+      return getColors(db).then(function(colors) {
+        let quantity = colors.length;
+        let message;
+
+        if (quantity == 0) {
+          message = 'We\'re sorry, there is something wrong with our system, please try again later.';
+        } else {
+          message = 'You want to buy a ' + product + ' in size ' + size + '. This product has the following colors: ';
+          message += colors.join(', ') + '. Which color do you want?';
+        }
+
+        return response(db, agent, message);
+      });
+    } else {
+      message = 'Sorry, I don\'t get that. We have ' + quantity + ' sizes: ';
+      message += sizes.join(', ') + '. Which size do you want to buy?';
+
+      return response(db, agent, message);
+    }
+  })
+  .catch(function(err) {
+    console.log(err);
   });
 }
 
