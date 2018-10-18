@@ -20,20 +20,12 @@ var colorsCol = 'colors';
 var logsCol = 'logs';
 var ordersCol = 'orders';
 
-function response(db, agent, message, suggestions) {
+function response(db, agent, message) {
   var log = { input: agent.query, output: message, timestamp: Date.now() };
   let dbo = db.db(dbName);
 
   return dbo.collection(logsCol).insertOne(log).then(function() {
     db.close();
-
-    /*
-    if (suggestions.length) {
-      for (let i = 0; i < suggestions.length; i++) {
-        agent.add(new Suggestion(suggestions[i]));
-      }
-    }
-    */
 
     return agent.add(message);
   });
@@ -155,9 +147,10 @@ function welcomeIntent(agent) {
     }));
     */
 
-    return;
+    agent.add(new Suggestion(`Quick Reply`));
+    agent.add(new Suggestion(`Suggestion`));
 
-    return response(db, agent, message, products);
+    return response(db, agent, message);
   })
   .catch(function(err) {
     console.log(err);
