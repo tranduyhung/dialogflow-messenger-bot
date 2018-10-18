@@ -43,7 +43,7 @@ function saveOrder(db, agent, productName, sizeName, colorName) {
         return agent.add(message);
       }
 
-      productId = product._id;
+      productId = product._id.toString();
 
       return dbo.collection(sizesCol).findOne({name: sizeName});
     })
@@ -52,7 +52,7 @@ function saveOrder(db, agent, productName, sizeName, colorName) {
         return agent.add(message);
       }
 
-      sizeId = size._id;
+      sizeId = size._id.toString();
 
       return dbo.collection(colorsCol).findOne({name: colorName});
     })
@@ -61,7 +61,7 @@ function saveOrder(db, agent, productName, sizeName, colorName) {
         return agent.add(message);
       }
 
-      colorId = color._id;
+      colorId = color._id.toString();
 
       let order = {
         product_id: productId,
