@@ -27,25 +27,13 @@ function response(db, agent, message, suggestions) {
   return dbo.collection(logsCol).insertOne(log).then(function() {
     db.close();
 
-    let messages = [];
-
-    if (message) {
-      messages.push(message);
-    }
-
     if (suggestions.length) {
       for (let i = 0; i < suggestions.length; i++) {
-        messages.push(new Suggestion(suggestions[i]));
+        agent.add(new Suggestion(suggestions[i]));
       }
     }
 
-    for (let i = 0; i < messages.length; i++) {
-      if (i < messages.length - 1) {
-        agent.add(messages[i]);
-      } else {
-        return agent.add(messages[i]);
-      }
-    }
+    return agent.add(message);
   });
 }
 
