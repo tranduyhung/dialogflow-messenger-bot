@@ -63,14 +63,14 @@ function saveOrder(db, agent, productName, sizeName, colorName) {
 
       colorId = color._id;
 
-      var order = {
+      let order = {
         product_id: productId,
         size_id: sizeId,
         color_id: colorId,
         timestamp: Date.now()
       };
 
-      return dbo.collection(productsCol).insertOne(order);
+      return dbo.collection(ordersCol).insertOne(order);
     });
 }
 
