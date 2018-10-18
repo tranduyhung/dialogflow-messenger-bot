@@ -1,7 +1,7 @@
 require('dotenv').config();
 var port = process.env.PORT || 3000;
 
-const { WebhookClient, Card } = require('dialogflow-fulfillment');
+const { WebhookClient, Card, Suggestion } = require('dialogflow-fulfillment');
 const {  } = require('actions-on-google');
 const bodyParser = require('body-parser');
 const express = require('express');
@@ -147,19 +147,10 @@ function welcomeIntent(agent) {
     }));
     */
 
-    return agent.add({"messages": [
-      {
-        "platform": "facebook",
-        "replies": [
-          "Quick reply 1",
-          "Quick reply 2",
-          "Quick reply 3"
-        ],
-        "title": "Quick Reply Title",
-        "type": 2
-      }
-    ]
-    });
+    agent.add(new Suggestion(`Quick Reply`));
+    agent.add(new Suggestion(`Suggestion`));
+
+    return;
 
     return response(db, agent, message);
   })
