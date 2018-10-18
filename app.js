@@ -137,7 +137,7 @@ function welcomeIntent(agent) {
     let message = 'Hello, welcome to our shop. We have ' + products.length + ' products: ';
     message += products.join(', ') + '. Which product do you want to buy?';
 
-    return agent.add(new BasicCard({
+    return agent.add(new Card({
       title: 'Card Title',
       text: 'Card Text',
       image: {
