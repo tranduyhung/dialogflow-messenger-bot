@@ -227,13 +227,49 @@ function sizeIntent(agent) {
 
 function colorIntent(agent) {
   var db;
-  var message = 'Entered colorIntent function';
+  var message = '';
+  var product = (typeof agent.parameters.product !== 'undefined') ? agent.parameters.product : '';
+  var size = (typeof agent.parameters.size !== 'undefined') ? agent.parameters.size : '';
+  var color = (typeof agent.parameters.color !== 'undefined') ? agent.parameters.color : '';
 
   return MongoClient.connect(dbUrl, dbOptions)
   .then(function(_db) {
     db = _db;
 
-    return response(db, agent, message);
+    return getColors(db);
+  })
+  .then(function(colors) {
+    let quantity = colors.length;
+
+    if (quantity == 0) {
+      let message = 'We\'re sorry, there is something wrong with our system, please try again later.';
+
+      return response(db, agent, message);
+    }
+
+    let colorExists = false;
+    let message;
+
+    for (let i = 0; i < quantity; i++) {
+      if (colors[i] == color) {
+        colorExists = true;
+        break;
+      }
+    }
+
+    if (colorExists) {
+      message = 'You want to buy a ' + color + ' ' + product + ' in size ' + size + '.';
+
+      return response(db, agent, message);
+    } else {
+      message = 'Sorry, I don\'t get that. We have ' + quantity + ' colors: ';
+      message += colors.join(', ') + '. Which color do you want to buy?';
+
+      return response(db, agent, message);
+    }
+  })
+  .catch(function(err) {
+    console.log(err);
   });
 }
 
@@ -242,20 +278,20 @@ app.get('/', (req, res) => res.send('Hello World!'));
 app.post('/', (req, res) => {
   const agent = new WebhookClient({ request: req, response: res });
 
-  console.log('webhookClient.intent:');
-  console.log(agent.intent);
-  console.log('webhookClient.action:');
-  console.log(agent.action);
-  console.log('webhookClient.parameters:');
-  console.log(agent.parameters);
-  console.log('webhookClient.contexts:')
-  console.log(agent.contexts);
+  //console.log('webhookClient.intent:');
+  //console.log(agent.intent);
+  //console.log('webhookClient.action:');
+  //console.log(agent.action);
+  //console.log('webhookClient.parameters:');
+  //console.log(agent.parameters);
+  //console.log('webhookClient.contexts:')
+  //console.log(agent.contexts);
   //console.log('webhookClient.requestSource:');
   //console.log(agent.requestSource);
   //console.log('webhookClient.originalRequest:');
   //console.log(agent.originalRequest);
-  console.log('webhookClient.query:')
-  console.log(agent.query);
+  //console.log('webhookClient.query:')
+  //console.log(agent.query);
 
   //console.log('Dialogflow Request headers: ' + JSON.stringify(req.headers));
   //console.log('Dialogflow Request body: ' + JSON.stringify(req.body));
