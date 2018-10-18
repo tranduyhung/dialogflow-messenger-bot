@@ -35,6 +35,7 @@ function saveOrder(db, agent, productName, sizeName, colorName) {
   var sizeId;
   var colorId;
   var message = 'We\'re sorry, there is something wrong with our system, please try again later.';
+  var dbo = db.db(dbName);
 
   return dbo.collection(productsCol).findOne({name: productName})
     .then(function(product) {
