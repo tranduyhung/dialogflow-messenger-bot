@@ -319,12 +319,12 @@ function colorIntent(agent) {
     }
 
     if (colorExists) {
-      message = 'You have just bought a ' + color + ' ' + product + ' in size ' + size + '. Here is your invoice. Thank you for your purchase!';
+      message = 'You want to buy a ' + color + ' ' + product + ' in size ' + size + '. Please click the button below to complete your purchase. Thank you!';
 
       let card = new Card({
-        title: 'Invoice 12345',
-        text: 'Invoice for order 12345',
-        buttonText: 'View',
+        title: 'Order 12345',
+        text: 'Pay for order 12345',
+        buttonText: 'Pay',
         buttonUrl: 'https://www.google.com'
       });
 
