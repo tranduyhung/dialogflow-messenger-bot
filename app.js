@@ -1,7 +1,8 @@
 require('dotenv').config();
 var port = process.env.PORT || 3000;
 
-const { WebhookClient, Card, Button } = require('dialogflow-fulfillment');
+const { WebhookClient } = require('dialogflow-fulfillment');
+const { Card, Button } = require('actions-on-google');
 const bodyParser = require('body-parser');
 const express = require('express');
 
