@@ -2,6 +2,7 @@ require('dotenv').config();
 var port = process.env.PORT || 3000;
 
 const { WebhookClient, Card } = require('dialogflow-fulfillment');
+const {  } = require('actions-on-google');
 const bodyParser = require('body-parser');
 const express = require('express');
 
@@ -137,23 +138,12 @@ function welcomeIntent(agent) {
     let message = 'Hello, welcome to our shop. We have ' + products.length + ' products: ';
     message += products.join(', ') + '. Which product do you want to buy?';
 
-    /*
     return agent.add(new Card({
       title: 'Card Title',
       text: 'Card Text',
-      image: {
-        url: 'https://www.gstatic.com/devrel-devsite/v093b7aa18b25177253b89e71ebbebc6545f1e1e743b427cede8842a6f63894fd/dialogflow/images/lockup.svg',
-        accessibilityText: 'Card Image',
-      },
-      buttons: new Button({
-        title: 'Button Title',
-        url: 'https://www.google.com',
-      }),
+      buttonText: 'Button Title',
+      buttonUrl: 'https://www.google.com'
     }));
-    */
-
-    let card = new Card(); card.setImage('https://assistant.google.com/static/images/molecule/Molecule-Formation-stop.png');
-    return agent.add(card);
 
     return response(db, agent, message);
   })
