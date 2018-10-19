@@ -363,7 +363,7 @@ app.post('/', (req, res) => {
   //console.log('webhookClient.query:')
   //console.log(agent.query);
 
-  //console.log('Dialogflow Request headers: ' + JSON.stringify(req.headers));
+  console.log('Dialogflow Request headers: ' + JSON.stringify(req.headers));
   console.log('Dialogflow Request body: ' + JSON.stringify(req.body));
 
   let intentMap = new Map();
