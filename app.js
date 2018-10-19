@@ -348,7 +348,7 @@ app.get('/', (req, res) => res.send('Hello World!'));
 app.post('/', (req, res) => {
   const agent = new WebhookClient({ request: req, response: res });
 
-  /console.log('webhookClient.intent:');
+  console.log('webhookClient.intent:');
   //console.log(agent.intent);
   //console.log('webhookClient.action:');
   //console.log(agent.action);
