@@ -364,7 +364,7 @@ app.post('/', (req, res) => {
   //console.log(agent.query);
 
   //console.log('Dialogflow Request headers: ' + JSON.stringify(req.headers));
-  //console.log('Dialogflow Request body: ' + JSON.stringify(req.body));
+  console.log('Dialogflow Request body: ' + JSON.stringify(req.body));
 
   let intentMap = new Map();
   intentMap.set('Default Welcome Intent', welcomeIntent);
