@@ -145,8 +145,7 @@ function getColors(db) {
 function welcomeIntent(agent) {
   var db;
 
-  res.send(JSON.stringify({ speech: 'Hello', displayText: 'World', source: 'Custom', data: { key: 'value' } }));
-  res.end();
+  return agent.add(JSON.stringify({ speech: 'Hello', displayText: 'World', source: 'Custom', data: { key: 'value' } }));
 
   return MongoClient.connect(dbUrl, dbOptions)
   .then(function(_db) {
