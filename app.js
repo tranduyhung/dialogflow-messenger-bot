@@ -1,7 +1,7 @@
 require('dotenv').config();
 var port = process.env.PORT || 3000;
 
-const { WebhookClient, Card, Suggestion } = require('dialogflow-fulfillment');
+const { WebhookClient, Card, Suggestion, RichResponse } = require('dialogflow-fulfillment');
 const {  } = require('actions-on-google');
 const bodyParser = require('body-parser');
 const express = require('express');
@@ -144,6 +144,9 @@ function getColors(db) {
 
 function welcomeIntent(agent) {
   var db;
+
+  res.send(JSON.stringify({ speech: 'Hello', displayText: 'World', source: 'Custom', data: { key: 'value' } }));
+  res.end();
 
   return MongoClient.connect(dbUrl, dbOptions)
   .then(function(_db) {
@@ -348,7 +351,7 @@ app.get('/', (req, res) => res.send('Hello World!'));
 app.post('/', (req, res) => {
   const agent = new WebhookClient({ request: req, response: res });
 
-  console.log('webhookClient.intent:');
+  //console.log('webhookClient.intent:');
   //console.log(agent.intent);
   //console.log('webhookClient.action:');
   //console.log(agent.action);
@@ -436,6 +439,8 @@ app.get('/api/getSizes', function(req, res) {
 });
 
 app.get('/api/getOrders', function(req, res) {
+  let richResponse = new RichResponse();
+  richResponse.setPlatform(PLATFORMS.ACTIONS_ON_GOOGLE)
   res.setHeader('Content-Type', 'application/json');
 
   MongoClient.connect(dbUrl, dbOptions, function(err, db) {
