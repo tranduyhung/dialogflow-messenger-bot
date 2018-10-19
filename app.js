@@ -348,7 +348,7 @@ app.get('/', (req, res) => res.send('Hello World!'));
 app.post('/', (req, res) => {
   const agent = new WebhookClient({ request: req, response: res });
 
-  //console.log('webhookClient.intent:');
+  /console.log('webhookClient.intent:');
   //console.log(agent.intent);
   //console.log('webhookClient.action:');
   //console.log(agent.action);
@@ -358,12 +358,12 @@ app.post('/', (req, res) => {
   //console.log(agent.contexts);
   //console.log('webhookClient.requestSource:');
   //console.log(agent.requestSource);
-  //console.log('webhookClient.originalRequest:');
-  //console.log(agent.originalRequest);
+  console.log('webhookClient.originalRequest:');
+  console.log(agent.originalRequest);
   //console.log('webhookClient.query:')
   //console.log(agent.query);
 
-  console.log('Dialogflow Request headers: ' + JSON.stringify(req.headers));
+  //console.log('Dialogflow Request headers: ' + JSON.stringify(req.headers));
   console.log('Dialogflow Request body: ' + JSON.stringify(req.body));
 
   let intentMap = new Map();
